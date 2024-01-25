@@ -1,0 +1,106 @@
+.filters {
+    height: 70px;
+    width: 100%;
+
+    background-color: white;
+
+    /* border: 1px solid #DDDDDD; */
+
+    /* Temp */
+    border: 1px solid green;
+
+    border-radius: 4px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.filters button {
+    height: 48px;
+    width: 20%;
+
+    font-size: 18px;
+    color: #FFFFFF;
+
+    background-color: #ff5a5f;
+
+    border: none;
+    border-radius: 4px;
+    margin-right: 30px;
+
+    cursor: pointer;
+}
+
+.filters button:hover {
+    opacity: 90%;
+}
+
+.filters .locations {
+    height: 100%;
+    width: 25%;
+
+    /* border-right: 1px solid #DDDDDD; */
+    margin-left: 45px;
+
+    /* temp */
+    border: 1px solid blue;
+
+    /* display: flex;
+    flex-direction: column;
+    justify-content: center; */
+
+    position: relative;
+}
+
+.filters .amenities {
+    height: 100%;
+    width: 25%;
+
+    margin-left: 45px;
+    margin-right: auto;
+
+    /* display: flex;
+    flex-direction: column;
+    justify-content: center; */
+
+    position: relative;
+}
+
+.filters>div>h3 {
+    font-weight: 600;
+
+    margin-top: 12px;
+    margin-bottom: 0px;
+}
+
+.filters>div>h4 {
+    font-weight: 400;
+    font-size: 14px;
+
+    margin-top: 2px;
+    margin-bottom: 0px;
+}
+
+/* Task 6 */
+
+.popover {
+    /* display: none; */
+    display: inline-block;
+
+    position: absolute;
+
+    width: 100%;
+
+    background-color: #FAFAFA;
+    /* border: 1px solid #DDDDDD; */
+    border: 1px solid red;
+
+    border-radius: 4px;
+
+    top: 80%;
+    left: -45px;
+    height: auto;
+
+    list-style-type: none;
+}
