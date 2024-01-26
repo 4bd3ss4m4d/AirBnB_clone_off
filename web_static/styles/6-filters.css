@@ -37,7 +37,7 @@
     width: 25%;
     height: 100%;
 
-    margin-left: 45px;
+    padding-left: 45px;
 
     display: flex;
     flex-direction: column;
@@ -68,9 +68,9 @@
 
     position: absolute;
     top: 100%;
-    left: -45px;
+    left: 0;
 
-    width: calc(100% + 45px);
+    width: 100%;
 
     background-color: #FAFAFA;
 
