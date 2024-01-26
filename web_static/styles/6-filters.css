@@ -4,11 +4,7 @@
 
     background-color: white;
 
-    /* border: 1px solid #DDDDDD; */
-
-    /* Temp */
-    border: 1px solid green;
-
+    border: 1px solid #DDDDDD;
     border-radius: 4px;
 
     display: flex;
@@ -36,71 +32,72 @@
     opacity: 90%;
 }
 
-.filters .locations {
-    height: 100%;
+.filters .locations,
+.filters .amenities {
     width: 25%;
+    height: 100%;
 
-    /* border-right: 1px solid #DDDDDD; */
     margin-left: 45px;
 
-    /* temp */
-    border: 1px solid blue;
-
-    /* display: flex;
+    display: flex;
     flex-direction: column;
-    justify-content: center; */
+    justify-content: center;
 
     position: relative;
 }
 
+.filters .locations {
+    border-right: 1px solid #DDDDDD;
+}
+
 .filters .amenities {
-    height: 100%;
-    width: 25%;
-
-    margin-left: 45px;
     margin-right: auto;
-
-    /* display: flex;
-    flex-direction: column;
-    justify-content: center; */
-
-    position: relative;
 }
 
 .filters>div>h3 {
     font-weight: 600;
-
-    margin-top: 12px;
-    margin-bottom: 0px;
 }
 
 .filters>div>h4 {
     font-weight: 400;
     font-size: 14px;
-
-    margin-top: 2px;
-    margin-bottom: 0px;
 }
 
-/* Task 6 */
-
 .popover {
-    /* display: none; */
-    display: inline-block;
+    display: none;
 
     position: absolute;
+    top: 100%;
+    left: -45px;
 
-    width: 100%;
+    width: calc(100% + 45px);
 
     background-color: #FAFAFA;
-    /* border: 1px solid #DDDDDD; */
-    border: 1px solid red;
 
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-left: 22.5px;
+    border: 1px solid #DDDDDD;
     border-radius: 4px;
+}
 
-    top: 80%;
-    left: -45px;
-    height: auto;
+.popover h2 {
+    font-size: 16px;
+}
 
-    list-style-type: none;
+.popover ul {
+    margin-bottom: 3px;
+}
+
+.popover ul li {
+    padding-left: 20px;
+}
+
+.popover li:not(:first-child) h2 {
+    margin-top: 4px;
+}
+
+.filters .locations:hover .popover,
+.filters .amenities:hover .popover {
+    display: block;
 }
