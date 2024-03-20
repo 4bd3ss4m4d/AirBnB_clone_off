@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 '''
-The User class defines the attributes and methods for the User object
+The User class represents a user of the application
 '''
 
 from models.base_model import BaseModel
@@ -9,7 +9,7 @@ from models.base_model import BaseModel
 
 class User(BaseModel):
     '''
-    The User class defines the attributes and methods for the User object
+    The User class represents a user of the application
 
     Attributes:
         email (str): The user's email address
