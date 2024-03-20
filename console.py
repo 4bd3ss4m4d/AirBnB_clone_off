@@ -6,8 +6,13 @@ import cmd
 import shlex
 
 from models import storage
+from models.amenity import Amenity
 from models.base_model import BaseModel
 from models.user import User
+from models.city import City
+from models.place import Place
+from models.review import Review
+from models.state import State
 
 
 class HBNBCommand(cmd.Cmd):
@@ -22,8 +27,13 @@ class HBNBCommand(cmd.Cmd):
         emptyline(self): An empty line + ENTER shouldn't execute anything
     '''
     class_names = {
+        'Amenity': Amenity,
         'BaseModel': BaseModel,
-        'User': User
+        'City': City,
+        'Place': Place,
+        'Review': Review,
+        'State': State,
+        'User': User,
     }
 
     prompt = '(hbnb) '
