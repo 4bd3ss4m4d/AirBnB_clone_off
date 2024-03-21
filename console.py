@@ -3,7 +3,9 @@
 '''AirBnB Clone - Command Line Interface (CLI) Module'''
 
 import cmd
+import re
 import shlex
+
 
 from models import storage
 from models.amenity import Amenity
@@ -37,6 +39,30 @@ class HBNBCommand(cmd.Cmd):
     }
 
     prompt = '(hbnb) '
+
+    def default(self, line):
+        '''Called on an input line when the command prefix is not recognized.
+        If this method is not overridden, it prints an error message and
+        returns.
+        '''
+        # Pattern to match the command of the form
+        # <class name>.<method name>(<args>)
+        pattern = r'(\w+)\.(\w+)\((.*)\)'
+        # Try to match the pattern with the user input
+        match = re.match(pattern, line)
+        if match:
+            class_name = match.group(1)
+            method_name = match.group(2)
+            args = match.group(3)
+
+            # Recover the original command to execute
+            reconstructed_command = '{} {} {}'.format(method_name, class_name, args)
+            # Execute the command
+            self.onecmd(reconstructed_command)
+        else:
+            # If the pattern doesn't match, execute the default method
+            super().default(line)
+
 
     def do_quit(self, line):
         '''Quit command to exit the program
