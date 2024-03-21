@@ -25,6 +25,9 @@ Desktop.ini
 *.env
 .env/
 
+# Ignore files
+file.json
+
 # Ignore other folder
 other/
 testing/

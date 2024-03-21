@@ -52,17 +52,17 @@ class HBNBCommand(cmd.Cmd):
         match = re.match(pattern, line)
         if match:
             class_name = match.group(1)
-            method_name = match.group(2)
+            mthd_name = match.group(2)
             args = match.group(3)
 
             # Recover the original command to execute
-            reconstructed_command = '{} {} {}'.format(method_name, class_name, args)
+            reconstructed_cmd = '{} {} {}'.format(mthd_name, class_name, args)
             # Execute the command
-            self.onecmd(reconstructed_command)
+            self.onecmd(reconstructed_cmd)
+
         else:
             # If the pattern doesn't match, execute the default method
             super().default(line)
-
 
     def do_quit(self, line):
         '''Quit command to exit the program
@@ -256,6 +256,27 @@ class HBNBCommand(cmd.Cmd):
         # Set the attribute in the instance
         setattr(obj, attr_name, attr_value)
         storage.save()
+
+    def do_count(self, line):
+        '''Retrieve the number of instances of a class
+        '''
+        class_name = shlex.split(line)[0] if line else ''
+
+        # Check if user didn't type anything
+        if not class_name:
+            print('** class name missing **')
+            return
+
+        # Check if class_name is in the class_names dictionary
+        if class_name not in self.class_names:
+            print("** class doesn't exist **")
+            return
+
+        counter = 0
+        for key in storage.all():
+            if key.startswith(class_name + '.'):
+                counter += 1
+        print(counter)
 
 
 if __name__ == '__main__':
