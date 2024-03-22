@@ -53,7 +53,7 @@ class HBNBCommand(cmd.Cmd):
         if match:
             class_name = match.group(1)
             mthd_name = match.group(2)
-            args = match.group(3)
+            args = match.group(3).replace(',', '')
 
             # Recover the original command to execute
             reconstructed_cmd = '{} {} {}'.format(mthd_name, class_name, args)
