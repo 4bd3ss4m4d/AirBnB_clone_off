@@ -2,19 +2,19 @@
 
 '''AirBnB Clone - Command Line Interface (CLI) Module'''
 
+import ast
 import cmd
 import re
 import shlex
 
-
 from models import storage
 from models.amenity import Amenity
 from models.base_model import BaseModel
-from models.user import User
 from models.city import City
 from models.place import Place
 from models.review import Review
 from models.state import State
+from models.user import User
 
 
 class HBNBCommand(cmd.Cmd):
@@ -22,11 +22,26 @@ class HBNBCommand(cmd.Cmd):
     The HBNB command interpreter.
 
     Attributes:
+        class_names (dict): A dictionary containing the class names and the
+                            corresponding class objects
         prompt (str): The custom prompt
     Methods:
         do_quit(self, line): Quit command to exit the program
         do_EOF(self): EOF command to exit the program when the user inputs EOF
         emptyline(self): An empty line + ENTER shouldn't execute anything
+        do_create(self, arg): Create a new instance of BaseModel, save it (to
+                              the JSON file) and print the id
+        do_show(self, line): Print the string representation of an instance
+                                based on the class name and id
+        do_destroy(self, line): Delete an instance based on the class name and
+                                id (save the change into the JSON file)
+        do_all(self, line): Print all string representation of all instances
+                            based or not on the class name
+        do_update(self, line): Update an instance based on the class name and
+                               id
+        default(self, line): Called on an input line when the command prefix is
+                            not recognized
+        do_count(self, line): Retrieve the number of instances of a class
     '''
     class_names = {
         'Amenity': Amenity,
@@ -41,9 +56,8 @@ class HBNBCommand(cmd.Cmd):
     prompt = '(hbnb) '
 
     def default(self, line):
-        '''Called on an input line when the command prefix is not recognized.
-        If this method is not overridden, it prints an error message and
-        returns.
+        '''Called on an input line when the command prefix is not recognized. \
+If this method is not overridden, it prints an error message and returns.
         '''
         # Pattern to match the command of the form
         # <class name>.<method name>(<args>)
@@ -53,16 +67,25 @@ class HBNBCommand(cmd.Cmd):
         if match:
             class_name = match.group(1)
             mthd_name = match.group(2)
-            args = match.group(3).replace(',', '')
+            args = match.group(3)
 
-            # Recover the original command to execute
+            # Reconstruct the original command to execute
             reconstructed_cmd = '{} {} {}'.format(mthd_name, class_name, args)
+
             # Execute the command
             self.onecmd(reconstructed_cmd)
-
         else:
             # If the pattern doesn't match, execute the default method
             super().default(line)
+
+    def emptyline(self):
+        '''An empty line + ENTER shouldn't execute anything'''
+        pass
+
+    def do_nothing(self, arg):
+        '''Does nothing
+        '''
+        pass
 
     def do_quit(self, line):
         '''Quit command to exit the program
@@ -75,14 +98,9 @@ class HBNBCommand(cmd.Cmd):
         print()  # Print a newline before exiting
         return True
 
-    def emptyline(self):
-        '''An empty line + ENTER shouldn't execute anything
-        '''
-        pass
-
     def do_create(self, arg):
-        '''Create a new instance of BaseModel, save it (to the JSON file) and
-        print the id
+        '''Create a new instance of BaseModel, save it (to the JSON file) and \
+print the id
         '''
         # Check if user didn't type anything
         if not arg:
@@ -102,8 +120,9 @@ class HBNBCommand(cmd.Cmd):
         print(new_instance.id)
 
     def do_show(self, line):
-        '''Print the string representation of an instance based on the class
-         name and id'''
+        '''Print the string representation of an instance based on the class \
+name and id
+'''
         # Split the user input into a list of arguments
         args = shlex.split(line)
 
@@ -135,8 +154,8 @@ class HBNBCommand(cmd.Cmd):
         print(storage.all()[obj_key])
 
     def do_destroy(self, line):
-        '''Delete an instance based on the class name and id (save the change
-        into the JSON file)
+        '''Delete an instance based on the class name and id (save the change \
+into the JSON file)
         '''
         # Split the user input into a list of arguments
         args = shlex.split(line)
@@ -170,8 +189,9 @@ class HBNBCommand(cmd.Cmd):
         storage.save()
 
     def do_all(self, line):
-        '''Print all string representation of all instances based or not on the
-          class name'''
+        '''Print all string representation of all instances based or not on \
+the class name
+'''
         # Split the user input into a list of arguments
         class_name = shlex.split(line)[0] if line else ''
 
@@ -190,13 +210,13 @@ class HBNBCommand(cmd.Cmd):
         print(filtered_objs)
 
     def do_update(self, line):
-        '''Update an instance based on the class name and id by adding or
-         updating attribute (save the change into the JSON file)
+        '''Update an instance based on the class name and id by adding or \
+updating attribute (save the change into the JSON file)
         '''
         # Split the user input into a list of arguments
         args = shlex.split(line)
 
-        # Check if user didn't type anything
+        # Check if the user didn't type anything
         if not args:
             print('** class name missing **')
             return
@@ -215,47 +235,66 @@ class HBNBCommand(cmd.Cmd):
         objs = storage.all()
 
         # Get the instance id from the user input
-        inst_id = args[1]
+        inst_id = args[1].replace(',', '')
         # Create a key for the instance in the storage dictionary
         obj_key = '{}.{}'.format(class_name, inst_id)
         if obj_key not in objs:
             print("** no instance found **")
             return
 
-        # Check if user didn't type the attribute name
-        if len(args) == 2:
-            print('** attribute name missing **')
-            return
+        update_data = {}
 
-        # Get the attribute name from the user input
-        attr_name = args[2]
+        # Pattern to match a dict passed as an argument
+        dict_pattern = r"\{.*?\}"
+        dict_match = re.search(dict_pattern, line)
+        if dict_match:
+            try:
+                update_data = ast.literal_eval(dict_match.group(0))
+            except SyntaxError:
+                return
+        else:
+            # Check if user didn't type the attribute name
+            if len(args) == 2:
+                print('** attribute name missing **')
+                return
 
-        # Check if user didn't type the attribute value
-        if len(args) == 3:
-            print('** value missing **')
-            return
+            # Check if user didn't type the attribute value
+            if len(args) == 3:
+                print('** value missing **')
+                return
 
-        # Get the attribute value from the user input
-        attr_value = args[3]
+            attr_name = args[2].replace(',', '')
+            attr_value = args[3].replace(',', '')
 
-        # If the user tries to update the id, created_at or updated_at
-        # attributes don't do anything
-        if attr_name in ['id', 'created_at', 'updated_at']:
-            return
+            update_data[attr_name] = attr_value
 
         obj = objs[obj_key]
-        # Try to convert the attribute value to the same type as the attribute
-        # in the instance
-        try:
-            attr_type = type(getattr(obj, attr_name))
-            attr_value = attr_type(attr_value)
-        # If an error occurs, don't do anything
-        except (AttributeError, ValueError):
-            pass
 
-        # Set the attribute in the instance
-        setattr(obj, attr_name, attr_value)
-        storage.save()
+        for attr_name, attr_value in update_data.items():
+            if attr_name in ['id', 'created_at', 'updated_at']:
+                continue
+
+            # Convert the attribute value to the appropriate type
+            try:
+                if str(attr_value).isdigit():
+                    attr_value = int(attr_value)
+                else:
+                    attr_value = float(attr_value)
+            except ValueError:
+                pass
+
+            # Try to convert the attribute value to the same type as the
+            # attribute in the instance
+            try:
+                attr_type = type(getattr(obj, attr_name))
+                attr_value = attr_type(attr_value)
+            # If an error occurs, don't do anything
+            except (AttributeError, ValueError):
+                pass
+
+            # Set the attribute in the instance
+            setattr(obj, attr_name, attr_value)
+            storage.save()
 
     def do_count(self, line):
         '''Retrieve the number of instances of a class
